@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Users Mongo</title>
+</head>
+<body>
+
+  <h2>Ajouter un user</h2>
+  <input type="text" id="name" placeholder="Name">
+  <input type="email" id="email" placeholder="Email">
+  <input type="number" id="age" placeholder="Age">
+  <button onclick="createUser()">Ajouter</button>
+
+  <hr>
+
+  <h2>Liste des Users</h2>
+  <button onclick="loadUsers()">Charger</button>
+  <ul id="list"></ul>
+
+  <script>
+    const API = "http://localhost:3000/users";
+
+    async function loadUsers() {
+      const res = await fetch(API);
+      const data = await res.json();
+
+      const list = document.getElementById("list");
+      list.innerHTML = "";
+
+      data.forEach(user => {
+        const li = document.createElement("li");
+        li.textContent = `${user.name} - ${user.email}`;
+        list.appendChild(li);
+      });
+    }
+
+    async function createUser() {
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const age = document.getElementById("age").value;
+
+      await fetch(API, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ name, email, age: Number(age) })
+      });
+
+      loadUsers();
+    }
+  </script>
+
+</body>
+</html>
